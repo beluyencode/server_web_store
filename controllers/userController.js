@@ -51,6 +51,7 @@ class User {
                 userName: findUser.userName
             }
             const token = jwt.sign(user, process.env.jwtSignature, { expiresIn: "24h" });
+            console.log(findUser.userName + " is onl");
             res.json({ message: "successful", token: token });
         } else {
             res.json({ message: 'error', contentError: "Tài khoản hoặc mật khẩu không đúng" });
@@ -65,6 +66,7 @@ class User {
             res.json({ message: 'error', contentError: "Tài khoản đã tồn tại" });
         } else {
             req.body.cart = [];
+            req.body.order = [];
             db.db.push(req.body);
             console.log(db.db);
             res.json({ message: 'successful' });
