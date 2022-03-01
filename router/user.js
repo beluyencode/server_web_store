@@ -11,5 +11,7 @@ router.post('/signin',User.signin);
 router.post('/addProductToCart',veryfyToken,User.addProductToCart);
 router.post('/order',veryfyToken,User.order);
 router.post('/getOrder',veryfyToken,User.getOrder);
+router.post("/forgetPassword", User.forgetPassword);
+router.post("/verifyCode", User.verifyCode);
 
 module.exports = router;

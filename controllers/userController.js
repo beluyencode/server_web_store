@@ -1,5 +1,9 @@
 const db = require("../db");
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const VerificationCode = require('../modules/VerificationCode');
+const VerificationCodes = new VerificationCode();
+
 
 class User {
     getUser(req, res) {
@@ -122,13 +126,51 @@ class User {
             order: findUser.order
         }
         res.json({ messages: "successful", user: user });
-}
+    }
 
-getOrder(req, res) {
-    let findUser = db.db.find(user => user.userName === req.user.userName);
-    res.json({ messages: "successful", order: findUser.order });
-}
+    getOrder(req, res) {
+        let findUser = db.db.find(user => user.userName === req.user.userName);
+        res.json({ messages: "successful", order: findUser.order });
+    }
 
+    forgetPassword(req, res) {
+        let transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.GMAIL_ADDRESS,
+                pass: process.env.PASSWORD,
+            },
+        });
+        let code = VerificationCodes.createCode(req.body.mail);
+
+        let content = `<b>Mã xác nhận của bạn là : ${code}</b>`;
+
+        transporter.sendMail({
+            from: process.env.GMAIL_ADDRESS,
+            to: req.body.mail,
+            subject: "Mã xác nhận",
+            text: "Mã xác nhận",
+            html: content,
+        }, (err) => {
+            if (err) {
+                res.send(err);
+            } else {
+                //vô hiệu mã xác nhận sau 60s
+                setTimeout(() => {
+                    VerificationCodes.deleteCode(req.body.mail);
+                }, 60000);
+                res.send({ messages : "successful" });
+            }
+        });
+    }
+
+    VerificationCode(req, res) {
+        if (VerificationCodes.verifyCode(req.body.mail, req.body.verifyCode)) {
+            res.json({messages : "successful"});
+        } else {
+            res.json({messages : "Mã xác nhập không đúng"});
+        }
+    }
 }
 
 module.exports = new User;
