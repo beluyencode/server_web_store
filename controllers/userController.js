@@ -164,7 +164,7 @@ class User {
         });
     }
 
-    VerificationCode(req, res) {
+    verifyCode(req, res) {
         if (VerificationCodes.verifyCode(req.body.mail, req.body.verifyCode)) {
             res.json({messages : "successful"});
         } else {
