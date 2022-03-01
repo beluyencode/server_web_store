@@ -85,7 +85,7 @@ class User {
                 order: user.order
             }
         }
-        res.send(JSON.stringify(userAfterUpdate));
+        res.json({message: "successful" , userAfterUpdate});
     }
 
     order(req, res) {
