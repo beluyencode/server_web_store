@@ -114,8 +114,17 @@ class User {
                 }
             })
         })
-        findUser.cart = findUser.cart.filter(cart => {return cart !== null});
-        res.json({messages: "successful"});
+        findUser.cart = findUser.cart.filter(cart => { return cart !== null; });
+        let user = {
+            message: "successful",
+            user: {
+                name: findUser.name,
+                userName: findUser.userName,
+                cart: findUser.cart,
+                order: findUser.order
+            }
+        }
+        res.json({messages: "successful", user:user});
     }
 
     getOrder(req, res) {
