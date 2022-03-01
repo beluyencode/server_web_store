@@ -92,22 +92,22 @@ class User {
         let date = new Date();
         let time = date.getHours() + ':' + date.getMinutes();
         db.order.push({
-            user : req.user,
-            product : req.body.product,
-            price : req.body.totalPrice,
-            date : date.toLocaleDateString(),
-            time :time
+            user: req.user,
+            product: req.body.product,
+            price: req.body.totalPrice,
+            date: date.toLocaleDateString(),
+            time: time
 
         })
         let findUser = db.db.find(user => user.userName === req.user.userName);
         findUser.order.push({
-            product : req.body.product,
-            price : req.body.totalPrice,
-            date : date.toLocaleDateString(),
-            time : time
+            product: req.body.product,
+            price: req.body.totalPrice,
+            date: date.toLocaleDateString(),
+            time: time
         });
         let arr = [...findUser.cart];
-        findUser.cart.forEach((cart,index) => {
+        findUser.cart.forEach((cart, index) => {
             req.body.product.forEach(product => {
                 if (cart === product.id) {
                     delete findUser.cart[index];
@@ -116,21 +116,18 @@ class User {
         })
         findUser.cart = findUser.cart.filter(cart => { return cart !== null; });
         let user = {
-            message: "successful",
-            user: {
-                name: findUser.name,
-                userName: findUser.userName,
-                cart: findUser.cart,
-                order: findUser.order
-            }
+            name: findUser.name,
+            userName: findUser.userName,
+            cart: findUser.cart,
+            order: findUser.order
         }
-        res.json({messages: "successful", user:user});
-    }
+        res.json({ messages: "successful", user: user });
+}
 
-    getOrder(req, res) {
-        let findUser = db.db.find(user => user.userName === req.user.userName);
-        res.json({messages: "successful", order: findUser.order});
-    }
+getOrder(req, res) {
+    let findUser = db.db.find(user => user.userName === req.user.userName);
+    res.json({ messages: "successful", order: findUser.order });
+}
 
 }
 
