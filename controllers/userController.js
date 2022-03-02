@@ -144,6 +144,7 @@ class User {
         let code = VerificationCodes.createCode(req.body.mail);
 
         let content = `<b>Mã xác nhận của bạn là : ${code}</b>`;
+        console.log(VerificationCodes.arrCodes);
 
         transporter.sendMail({
             from: process.env.GMAIL_ADDRESS,
@@ -158,6 +159,7 @@ class User {
                 //vô hiệu mã xác nhận sau 60s
                 setTimeout(() => {
                     VerificationCodes.deleteCode(req.body.mail);
+                    console.log(VerificationCodes.arrCodes);
                 }, 60000);
                 res.json({ messages : "successful" });
             }
