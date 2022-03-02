@@ -153,13 +153,13 @@ class User {
             html: content,
         }, (err) => {
             if (err) {
-                res.send(err);
+                res.json({ error: "error" });
             } else {
                 //vô hiệu mã xác nhận sau 60s
                 setTimeout(() => {
                     VerificationCodes.deleteCode(req.body.mail);
                 }, 60000);
-                res.send({ messages : "successful" });
+                res.json({ messages : "successful" });
             }
         });
     }
