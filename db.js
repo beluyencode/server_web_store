@@ -10,7 +10,7 @@ module.exports.db = [
           name: 'longlc',
           userName: 'longlc2002',
           password: "123456",
-          email: 'meolong2002@gmail.com ',
+          email: 'darlinglll2101@gmail.com',
           cart: [],
           order: []
      }

@@ -64,10 +64,10 @@ class User {
 
     signin(req, res) {
         let findUserName = db.db.find(user => {
-            return user.userName === req.body.userName;
+            return user.userName === req.body.userName || user.email === req.body.email;
         });
         if (findUserName) {
-            res.json({ message: 'error', contentError: "Tài khoản đã tồn tại" });
+            res.json({ message: 'error', contentError: "Tài khoản hoặc email đã tồn tại" });
         } else {
             req.body.cart = [];
             req.body.order = [];
@@ -144,7 +144,7 @@ class User {
         let code = VerificationCodes.createCode(req.body.mail);
 
         let content = `<b>Mã xác nhận của bạn là : ${code}</b>`;
-        console.log(VerificationCodes.arrCodes);
+        console.log("Mảng mã xác nhận :",VerificationCodes.arrCodes);
 
         transporter.sendMail({
             from: process.env.GMAIL_ADDRESS,
@@ -159,7 +159,7 @@ class User {
                 //vô hiệu mã xác nhận sau 60s
                 setTimeout(() => {
                     VerificationCodes.deleteCode(req.body.mail);
-                    console.log(VerificationCodes.arrCodes);
+                    console.log("Mảng mã xác nhận :",VerificationCodes.arrCodes);
                 }, 60000);
                 res.json({ messages : "successful" });
             }
@@ -168,10 +168,17 @@ class User {
 
     verifyCode(req, res) {
         if (VerificationCodes.verifyCode(req.body.mail, req.body.verifyCode)) {
-            res.json({messages : "successful"});
+            let token = jwt.sign({mail :req.body.mail} ,process.env.jwtSignature, { expiresIn: "1h" });
+            res.json({messages : "successful" , token : token });
         } else {
             res.json({messages : "Mã xác nhập không đúng"});
         }
+    }
+
+    changePassword(req, res) {
+        let findUser = db.db.find(user => user.email === req.user.mail);
+        findUser.password = req.body.password;
+        res.json({messages : "successful"});
     }
 }
 
