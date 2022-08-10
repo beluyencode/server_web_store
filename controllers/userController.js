@@ -52,10 +52,12 @@ class User {
         if (findUser !== undefined) {
             var user = {
                 name: findUser.name,
-                userName: findUser.userName
+                userName: findUser.userName,
+                permissions: findUser.permissions.admin
             }
             const token = jwt.sign(user, process.env.jwtSignature, { expiresIn: "24h" });
             console.log(findUser.userName + " is onl");
+            res.status(200)
             res.json({ message: "successful", token: token });
         } else {
             res.json({ message: 'error', contentError: "Tài khoản hoặc mật khẩu không đúng" });
@@ -144,7 +146,7 @@ class User {
         let code = VerificationCodes.createCode(req.body.mail);
 
         let content = `<b>Mã xác nhận của bạn là : ${code}</b>`;
-        console.log("Mảng mã xác nhận :",VerificationCodes.arrCodes);
+        console.log("Mảng mã xác nhận :", VerificationCodes.arrCodes);
 
         transporter.sendMail({
             from: process.env.GMAIL_ADDRESS,
@@ -159,26 +161,26 @@ class User {
                 //vô hiệu mã xác nhận sau 60s
                 setTimeout(() => {
                     VerificationCodes.deleteCode(req.body.mail);
-                    console.log("Mảng mã xác nhận :",VerificationCodes.arrCodes);
+                    console.log("Mảng mã xác nhận :", VerificationCodes.arrCodes);
                 }, 60000);
-                res.json({ messages : "successful" });
+                res.json({ messages: "successful" });
             }
         });
     }
 
     verifyCode(req, res) {
         if (VerificationCodes.verifyCode(req.body.mail, req.body.verifyCode)) {
-            let token = jwt.sign({mail :req.body.mail} ,process.env.jwtSignature, { expiresIn: "1h" });
-            res.json({messages : "successful" , token : token });
+            let token = jwt.sign({ mail: req.body.mail }, process.env.jwtSignature, { expiresIn: "1h" });
+            res.json({ messages: "successful", token: token });
         } else {
-            res.json({messages : "Mã xác nhập không đúng"});
+            res.json({ messages: "Mã xác nhập không đúng" });
         }
     }
 
     changePassword(req, res) {
         let findUser = db.db.find(user => user.email === req.user.mail);
         findUser.password = req.body.password;
-        res.json({messages : "successful"});
+        res.json({ messages: "successful" });
     }
 }
 

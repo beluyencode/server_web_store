@@ -5,14 +5,20 @@ module.exports.db = [
           password: "123456",
           email: 'meolong2002@gmail.com',
           cart: [],
-          order: []
+          order: [],
+          permissions: {
+               admin: true
+          }
      }, {
           name: 'longlc',
           userName: 'longlc2002',
           password: "123456",
           email: 'darlinglll2101@gmail.com',
           cart: [],
-          order: []
+          order: [],
+          permissions: {
+               admin: false
+          }
      }
 ]
 module.exports.order = [];
